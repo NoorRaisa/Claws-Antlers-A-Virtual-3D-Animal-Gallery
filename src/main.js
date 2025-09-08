@@ -13,7 +13,7 @@ renderer.setClearColor(0xaaaaaa);
 document.body.appendChild(renderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
 const spotLight = new THREE.SpotLight(0xADC178, 1);
@@ -56,8 +56,11 @@ floorTex.repeat.set(4, 4);
 const wallTex = loader.load('/assets/wall2.jpeg');
 const roofTex = loader.load('/assets/roof.jpeg');
 const tableTex = loader.load('/assets/table1.jpeg');
-const painting1Tex = loader.load('/assets/cat1.jpeg');
-const painting2Tex = loader.load('/assets/cat2.jpeg');
+const painting1Tex = loader.load('/assets/cat3.jpeg');
+const painting2Tex = loader.load('/assets/cat4.jpeg');
+const painting3Tex = loader.load('/assets/cat8.jpeg'); // left wall
+const painting4Tex = loader.load('/assets/cat10.jpeg'); // right wall
+
 
 // --- Floor ---
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ map: floorTex }));
@@ -95,6 +98,25 @@ scene.add(painting1);
 const painting2 = new THREE.Mesh(new THREE.PlaneGeometry(8, 4), new THREE.MeshStandardMaterial({ map: painting2Tex }));
 painting2.position.set(5, 3, -9.8);
 scene.add(painting2);
+
+// --- Left wall painting ---
+const painting3 = new THREE.Mesh(
+    new THREE.PlaneGeometry(8, 4),
+    new THREE.MeshStandardMaterial({ map: painting3Tex, side: THREE.DoubleSide })
+);
+painting3.position.set(-9.8, 3, 0); // x near left wall, y same height, z centered
+painting3.rotation.y = Math.PI / 2; // rotate to face inside room
+scene.add(painting3);
+
+// --- Right wall painting ---
+const painting4 = new THREE.Mesh(
+    new THREE.PlaneGeometry(8, 4),
+    new THREE.MeshStandardMaterial({ map: painting4Tex, side: THREE.DoubleSide })
+);
+painting4.position.set(9.8, 3, 0); // x near right wall, y same height, z centered
+painting4.rotation.y = -Math.PI / 2; // rotate to face inside room
+scene.add(painting4);
+
 
 // --- Statue ---
 loadStatueModel(scene, '/assets/cat_statue.glb');
