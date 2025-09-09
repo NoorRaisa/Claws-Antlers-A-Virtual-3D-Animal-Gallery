@@ -16,9 +16,9 @@ export function loadStatueModel(scene, modelPath, tableTopY = 0.5) {
             bbox.getSize(size);
 
             // Scale statue to target height
-            const targetHeight = 1.5; // statue height in units
+            const targetHeight = 2.5; // statue height in units
             const scale = targetHeight / size.y;
-            statue.scale.set(scale, scale, scale);
+            statue.scale.set(1.2*scale, scale, scale);
 
             // --- Recompute bounding box after scaling ---
             const scaledBBox = new THREE.Box3().setFromObject(statue);
@@ -39,7 +39,7 @@ export function loadStatueModel(scene, modelPath, tableTopY = 0.5) {
                     // if (!mapTexture) {
                     //     mapTexture = new THREE.TextureLoader().load('/assets/statue2.jpeg');
                     // }
-                    let mapTexture=new THREE.TextureLoader().load('/assets/statue2.jpeg');
+                    let mapTexture=new THREE.TextureLoader().load('/assets/statue1.jpeg');
 
                     child.material = new THREE.ShaderMaterial({
                         vertexShader: statueVertexShader,
