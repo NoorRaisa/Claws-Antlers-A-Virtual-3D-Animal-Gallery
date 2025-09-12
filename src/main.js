@@ -17,7 +17,7 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 // ========== Lights ==========
-const ambientLight = new THREE.AmbientLight(0xfff8e7, 0.1);
+const ambientLight = new THREE.AmbientLight(0xfff8e7, 0.9);
 scene.add(ambientLight);
 
 const spotLight = new THREE.SpotLight(0xADC178, 0.7); 
@@ -56,9 +56,9 @@ const wallTex = loader.load('/assets/wall2.jpeg');
 const roofTex = loader.load('/assets/roof.jpeg');
 const tableTex = loader.load('/assets/table3.jpeg');
 const painting1Tex = loader.load('/assets/cat3.jpeg');
-const painting2Tex = loader.load('/assets/cat4.jpeg');
-const painting3Tex = loader.load('/assets/cat8.jpeg'); // left wall
-const painting4Tex = loader.load('/assets/cat10.jpeg'); // right wall
+const painting2Tex = loader.load('/assets/cat11.jpeg');
+const painting3Tex = loader.load('/assets/hash.jpeg'); // left wall
+const painting4Tex = loader.load('/assets/3.jpg'); // right wall
 
 // Optional rug textures (fallback to solid color if missing)
 const rugTex = loader.load('/assets/rug2.jpeg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; });
@@ -167,59 +167,6 @@ scene.add(painting4);
 loadStatueModel(scene, '/assets/cat_statue.glb');
 
 // ========== Decor Helpers (Chandelier, Planters, Rugs) ==========
-function addChandelier({
-  x = 0, z = -3, y = 6,
-  ringRadius = 1.2,
-  bulbs = 6,
-  lightColor = 0xFFD9A3,
-  lightIntensity = 0.08,
-  lightDistance = 8
-} = {}) {
-  const g = new THREE.Group();
-  g.position.set(x, y, z);
-
-  // shared materials (simple)
-  const metalMat = new THREE.MeshStandardMaterial({ color: 0xBBBBBB, metalness: 0.7, roughness: 0.3 });
-  const bulbMat  = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xFFE8B0, emissiveIntensity: 0.5, roughness: 0.25 });
-
-  // geometries (reuse)
-  const rodGeo  = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 12);
-  const ringGeo = new THREE.TorusGeometry(ringRadius, 0.06, 8, 32);
-  const bulbGeo = new THREE.SphereGeometry(0.12, 16, 12);
-
-  // rod
-  const rod = new THREE.Mesh(rodGeo, metalMat);
-  rod.position.y = -0.4;
-  rod.castShadow = true;
-  g.add(rod);
-
-  // ring
-  const ring = new THREE.Mesh(ringGeo, metalMat);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = -0.8;
-  ring.castShadow = true;
-  g.add(ring);
-
-  // bulbs placed around ring (no arms)
-  for (let i = 0; i < bulbs; i++) {
-    const a = (i / bulbs) * Math.PI * 2;
-    const bx = Math.cos(a) * ringRadius;
-    const bz = Math.sin(a) * ringRadius;
-    const bulb = new THREE.Mesh(bulbGeo, bulbMat);
-    bulb.position.set(bx, -0.8, bz);
-    g.add(bulb);
-  }
-  
-  // warm point light in center
-  const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance, 2.0);
-  light.position.set(0, -0.8, 0);
-  light.castShadow = true;
-  light.shadow.mapSize.set(1024, 1024);
-  g.add(light);
-
-  scene.add(g);
-  return g;
-}
 function addHangingSphereLight({
   x = 0, y = 6, z = 0,
   radius = 0.4,              // bigger sphere width
@@ -349,7 +296,6 @@ addPlanter({ x:  9.5, z: -8.8, potHeight: 1.0 })
 addRoundRug({ x: 0, z: -3, radius: 3.0 });                    // around table
 
 
-// ========== Camera Controls ==========
 const keys = {};
 document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
 document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
@@ -401,7 +347,8 @@ let theta = 0;
 let phi = 0.2;
 const angularSpeed = 0.015;
 const zoomSpeed = 0.2;
-
+let phiMin = -0.117;
+let phiMax = 1.1;
 function animate() {
   requestAnimationFrame(animate);
 
@@ -412,9 +359,13 @@ function animate() {
   if (keys['q']) radius -= zoomSpeed;
   if (keys['e']) radius += zoomSpeed;
 
-  const maxPhi = Math.PI / 2 - 0.1;
-  const minPhi = -Math.PI / 2 + 0.1;
-  phi = Math.max(minPhi, Math.min(maxPhi, phi));
+  // const maxPhi = Math.PI / 2 - 0.1;
+  // const minPhi = -Math.PI / 2 + 0.1;
+  // phi = Math.max(minPhi, Math.min(maxPhi, phi));
+
+  // later inside animate
+  phi = Math.max(phiMin, Math.min(phiMax, phi));
+
 
   radius = Math.max(2, Math.min(8.3, radius));
 
