@@ -45,19 +45,19 @@ scene.add(spotLight);
 
 const loader = new THREE.TextureLoader();
 
-const floorTex = loader.load('/assets/floor2.jpeg');
+const floorTex = loader.load('./assets/floor2.jpeg');
 floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
 floorTex.repeat.set(4, 4);
 
-const wallTex = loader.load('/assets/wall2.jpeg');
-const roofTex = loader.load('/assets/roof.jpeg');
-const tableTex = loader.load('/assets/table3.jpeg');
-const painting1Tex = loader.load('/assets/cat3.jpeg');
-const painting2Tex = loader.load('/assets/cat11.jpeg');
-const painting3Tex = loader.load('/assets/hash.jpeg'); // left wall
-const painting4Tex = loader.load('/assets/3.jpg'); // right wall
+const wallTex = loader.load('./assets/wall2.jpeg');
+const roofTex = loader.load('./assets/roof.jpeg');
+const tableTex = loader.load('./assets/table3.jpeg');
+const painting1Tex = loader.load('./assets/cat3.jpeg');
+const painting2Tex = loader.load('./assets/cat11.jpeg');
+const painting3Tex = loader.load('./assets/hash.jpeg'); // left wall
+const painting4Tex = loader.load('./assets/3.jpg'); // right wall
 
-const rugTex = loader.load('/assets/rug2.jpeg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; });
+const rugTex = loader.load('./assets/rug2.jpeg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; });
 
 const listener = new THREE.AudioListener();
 camera.add(listener);
@@ -66,7 +66,7 @@ const sound = new THREE.Audio(listener);
 const audioLoader = new THREE.AudioLoader();
 let isplay = true;
 
-audioLoader.load('/assets/piano.wav', function (buffer) {
+audioLoader.load('./assets/piano.wav', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.15);
@@ -74,7 +74,7 @@ audioLoader.load('/assets/piano.wav', function (buffer) {
 });
 
 const clickSound = new THREE.Audio(listener);
-audioLoader.load('/assets/click.wav', (buffer) => {
+audioLoader.load('./assets/click.wav', (buffer) => {
   clickSound.setBuffer(buffer);
   clickSound.setVolume(0.5);
 });
@@ -156,7 +156,7 @@ painting4.position.set(9.8, 3, 0);
 painting4.rotation.y = -Math.PI / 2;
 scene.add(painting4);
 
-loadStatueModel(scene, '/assets/cat_statue.glb');
+loadStatueModel(scene, './assets/cat_statue.glb');
 
 function addHangingSphereLight({
   x = 0, y = 6, z = 0,

@@ -36,7 +36,7 @@ export function loadStatueModel(scene, modelPath, tableTopY = 0.5) {
                     // if (!mapTexture) {
                     //     mapTexture = new THREE.TextureLoader().load('/assets/statue2.jpeg');
                     // }
-                    let mapTexture=new THREE.TextureLoader().load('/assets/statue1.jpeg');
+                    let mapTexture=new THREE.TextureLoader().load('./assets/statue1.jpeg');
 
                     child.material = new THREE.ShaderMaterial({
                         vertexShader: statueVertexShader,
