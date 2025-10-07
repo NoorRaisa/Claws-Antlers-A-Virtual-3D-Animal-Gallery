@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { loadStatueModel } from './objectLoader.js';
 
-// ========== Scene, Camera, Renderer ==========
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -16,14 +15,13 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-// ========== Lights ==========
 const ambientLight = new THREE.AmbientLight(0xfff8e7, 0.9);
 scene.add(ambientLight);
 
-const spotLight = new THREE.SpotLight(0xADC178, 0.7); 
+const spotLight = new THREE.SpotLight(0xFFD700, 2); 
 spotLight.position.set(-5, 5, 5);
 spotLight.angle = Math.PI / 5;
-spotLight.penumbra = 0.3;
+spotLight.penumbra = 0.2;
 spotLight.decay = 2;
 spotLight.distance = 15;
 spotLight.shadow.mapSize.width = 2048;
@@ -45,7 +43,6 @@ scene.add(spotLight);
 // scene.add(spotLight2);
 
 
-// ========== Textures ==========
 const loader = new THREE.TextureLoader();
 
 const floorTex = loader.load('/assets/floor2.jpeg');
@@ -60,10 +57,8 @@ const painting2Tex = loader.load('/assets/cat11.jpeg');
 const painting3Tex = loader.load('/assets/hash.jpeg'); // left wall
 const painting4Tex = loader.load('/assets/3.jpg'); // right wall
 
-// Optional rug textures (fallback to solid color if missing)
 const rugTex = loader.load('/assets/rug2.jpeg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; });
 
-// ========== Audio ==========
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -84,7 +79,6 @@ audioLoader.load('/assets/click.wav', (buffer) => {
   clickSound.setVolume(0.5);
 });
 
-// ========== Room Geometry ==========
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20),
   new THREE.MeshStandardMaterial({ map: floorTex })
@@ -118,7 +112,7 @@ roof.position.y = 6;
 roof.receiveShadow = false;
 scene.add(roof);
 
-// Table (center front)
+// Table 
 const table = new THREE.Mesh(
   new THREE.BoxGeometry(4, 0.5, 2),
   new THREE.MeshStandardMaterial({ map: tableTex })
@@ -128,7 +122,6 @@ table.castShadow = true;
 table.receiveShadow = true;
 scene.add(table);
 
-// ========== Paintings ==========
 const painting1 = new THREE.Mesh(
   new THREE.PlaneGeometry(8, 4),
   new THREE.MeshStandardMaterial({ map: painting1Tex })
@@ -163,30 +156,28 @@ painting4.position.set(9.8, 3, 0);
 painting4.rotation.y = -Math.PI / 2;
 scene.add(painting4);
 
-// ========== Statue ==========
 loadStatueModel(scene, '/assets/cat_statue.glb');
 
-// ========== Decor Helpers (Chandelier, Planters, Rugs) ==========
 function addHangingSphereLight({
   x = 0, y = 6, z = 0,
-  radius = 0.4,              // bigger sphere width
-  rodHeight = 1.5,           // length of hanging rod
+  radius = 0.4,
+  rodHeight = 1.5,           
   sphereColor = 0xffffff,
   emissive = 0xffe9b0,
   emissiveIntensity = 0.6,
   lightColor = 0x1E90FF,
-  lightIntensity = 0.4,
+  lightIntensity = 0.2,
   lightDistance = 8
 } = {}) {
   const group = new THREE.Group();
   group.position.set(x, y, z);
 
-  // Hanging rod (cylinder from ceiling to lamp)
+  // Hanging rod 
   const rod = new THREE.Mesh(
     new THREE.CylinderGeometry(0.05, 0.05, rodHeight, 12),
     new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.6, roughness: 0.3 })
   );
-  rod.position.y = -rodHeight / 2; // move below top anchor
+  rod.position.y = -rodHeight / 2;
   rod.castShadow = true;
   group.add(rod);
 
@@ -206,7 +197,7 @@ function addHangingSphereLight({
   group.add(sphere);
 
   // Point light inside the sphere
-  const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance, 2.0);
+  const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance);
   light.position.set(0, -rodHeight, 0);
   light.castShadow = true;
   light.shadow.mapSize.set(512, 512);
@@ -223,7 +214,6 @@ function addPlanter({ x = -8, z = -8, potHeight = 1.0 } = {}) {
   const group = new THREE.Group();
   group.position.set(x, 0, z);
 
-  // Simple pot
   const pot = new THREE.Mesh(
     new THREE.CylinderGeometry(0.4, 0.35, potHeight, 32, 1, false),
     new THREE.MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.8 })
@@ -232,7 +222,6 @@ function addPlanter({ x = -8, z = -8, potHeight = 1.0 } = {}) {
   pot.receiveShadow = true;
   group.add(pot);
 
-  // Soil
   const soil = new THREE.Mesh(
     new THREE.CylinderGeometry(0.35, 0.35, 0.05, 16),
     new THREE.MeshStandardMaterial({ color: 0x3e2723 })
@@ -240,7 +229,6 @@ function addPlanter({ x = -8, z = -8, potHeight = 1.0 } = {}) {
   soil.position.y = potHeight / 2;
   group.add(soil);
 
-  // Stem
   const stem = new THREE.Mesh(
     new THREE.CylinderGeometry(0.03, 0.03, potHeight, 8),
     new THREE.MeshStandardMaterial({ color: 0x5d4037 })
@@ -248,7 +236,6 @@ function addPlanter({ x = -8, z = -8, potHeight = 1.0 } = {}) {
   stem.position.y = potHeight / 2;
   group.add(stem);
 
-  // Two simple leaves
   const leafMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.7 });
   const leaf1 = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.6, 12), leafMat);
   leaf1.position.y = potHeight + 0.3;
@@ -275,32 +262,29 @@ addHangingSphereLight({
 
 function addRoundRug({ x = 0, z = -3, radius = 3.0 } = {}) {
   const mat = new THREE.MeshStandardMaterial({
-    map: rugTex || null,
-    color: rugTex ? 0xffffff : 0x6e5d52,
-    roughness: 0.95,
-    metalness: 0.0
+    map: rugTex,
+    roughness: 0.95
   });
   const rug = new THREE.Mesh(new THREE.CircleGeometry(radius, 64), mat);
   rug.rotation.x = -Math.PI / 2;
-  rug.position.set(x, 0.01, z); // lift to avoid z-fighting
+  rug.position.set(x, 0.01, z); 
   rug.receiveShadow = true;
   scene.add(rug);
   return rug;
 }
 
 
-// ========== Place Decor ==========
-//addChandelier({ x: 0, z: -3.0, y: 6, ringRadius: 1.3 });     // above table/statue
+//addChandelier({ x: 0, z: -3.0, y: 6, ringRadius: 1.3 });     
 addPlanter({ x: -9.5, z: -8.8, potHeight: 1.0 });
 addPlanter({ x:  9.5, z: -8.8, potHeight: 1.0 })
-addRoundRug({ x: 0, z: -3, radius: 3.0 });                    // around table
+addRoundRug({ x: 0, z: -3, radius: 3.0 });                    
 
 
 const keys = {};
 document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
 document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-// Paintings click-to-cycle
+// Paintings click change
 const paintings = [painting1, painting2, painting3, painting4];
 const paintingTextures = [painting1Tex, painting2Tex, painting3Tex, painting4Tex];
 const currentTextureIndex = [0, 1, 2, 3];
@@ -314,7 +298,6 @@ window.addEventListener('click', () => {
   clickSound.play();
 });
 
-// Toggle music (P key)
 document.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === 'p') {
     if (isplay) {
@@ -339,19 +322,22 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-// ========== Camera Orbit Animation ==========
 const clock = new THREE.Clock();
 const target = new THREE.Vector3(0, 1, -2); // center near statue/table
 let radius = 8;
-let theta = 0;
-let phi = 0.2;
+let theta = 0; //left right rotation
+let phi = 0.2; ///up down rotation
 const angularSpeed = 0.015;
 const zoomSpeed = 0.2;
 let phiMin = -0.117;
 let phiMax = 1.1;
+
+
+
 function animate() {
   requestAnimationFrame(animate);
 
+  // Camera movement controls
   if (keys['a']) theta -= angularSpeed;
   if (keys['d']) theta += angularSpeed;
   if (keys['w']) phi += angularSpeed;
@@ -359,27 +345,30 @@ function animate() {
   if (keys['q']) radius -= zoomSpeed;
   if (keys['e']) radius += zoomSpeed;
 
-  // const maxPhi = Math.PI / 2 - 0.1;
-  // const minPhi = -Math.PI / 2 + 0.1;
-  // phi = Math.max(minPhi, Math.min(maxPhi, phi));
-
-  // later inside animate
   phi = Math.max(phiMin, Math.min(phiMax, phi));
-
-
   radius = Math.max(2, Math.min(8.3, radius));
 
+  // Update camera position
   camera.position.x = target.x + radius * Math.cos(phi) * Math.sin(theta);
   camera.position.y = target.y + radius * Math.sin(phi);
   camera.position.z = target.z + radius * Math.cos(phi) * Math.cos(theta);
   camera.lookAt(target);
 
-  // Spotlight slow sweep
-  spotLight.position.x += 0.07;
-  if (spotLight.position.x > 3) spotLight.position.x = -3;
+  const elapsed = clock.getElapsedTime(); 
+  
+  const spotlightRadius = 5; 
+  const spotlightHeight = 2; 
+  const spotlightSpeed = 0.7; 
+  spotLight.position.x = target.x + spotlightRadius * Math.cos(elapsed * spotlightSpeed);
+  spotLight.position.z = target.z + spotlightRadius * Math.sin(elapsed * spotlightSpeed);
+  spotLight.position.y = spotlightHeight; // Keeping it fixed at a certain height
 
-  // Update potential shader time on statue (if any custom mat)
-  const elapsed = clock.getElapsedTime();
+  console.log('Spotlight Position:', spotLight.position);
+
+  spotLight.lookAt(target);
+
+  console.log('Spotlight Target:', target);
+
   scene.traverse((obj) => {
     if (obj.material?.uniforms?.uTime) {
       obj.material.uniforms.uTime.value = elapsed;
@@ -390,7 +379,7 @@ function animate() {
 }
 animate();
 
-// ========== Resize ==========
+
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
